@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- mapper DTD 선언 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.kosa.mapper.UserMapper">
+<!-- <mapper namespace="UserMapper"> -->
+    <resultMap type="Users" id="userMap">
+        <id     property="userNo"  column="user_no" />
+        <result property="userId"  column="user_id" />
+        <result property="userPw"  column="user_pw" />
+        <result property="name"    column="name" />
+        <result property="email"   column="email" />
+        <result property="enabled" column="enabled" />
+        <result property="regDate" column="reg_date" />
+        <result property="updDate" column="upd_date" />
+
+        <collection property="authList" resultMap="authMap"></collection>
+    </resultMap>
+    <!-- 
+    	List<UserAuth> authList; 구현 >> collection<authMap>
+     -->
+
+    <resultMap type="UserAuth" id="authMap">
+        <result property="userId" column="user_id" />
+        <result property="auth" column="auth" />
+    </resultMap>
+
+    <!-- 회원 조회 - id -->
+    <select id="login" resultMap="userMap">
+    <!-- <select id="login" resultMap="userMap" parameterType="String"> 파라미터타입 1개는 생략가능함-->
+        SELECT u.user_no
+        ,u.user_id
+        ,user_pw
+        ,name
+        ,email
+        ,enabled
+        ,reg_date
+        ,upd_date
+        ,auth
+        FROM "USER" u  JOIN user_auth auth ON u.user_id = auth.user_id
+        WHERE u.user_id = #{userId}
+    </select>
+</mapper>
